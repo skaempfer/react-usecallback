@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+The example is based on the code from the following blog article: [https://kinsta.com/de/blog/usecallback-react/](https://kinsta.com/de/blog/usecallback-react/)
+
 ## Available Scripts
 
 In the project directory, you can run:
