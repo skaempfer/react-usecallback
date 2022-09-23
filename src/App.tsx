@@ -1,26 +1,79 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { MouseEventHandler, useCallback, useState } from "react";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div>Note: Watch console log entries for render messages</div>
+      <NonMemoApp />
+      <MemoApp />
+    </>
   );
-}
+};
+
+const NonMemoApp = () => {
+  console.log("non-memo counter rendered");
+  const [countOne, setCountOne] = useState(0);
+  const [countTwo, setCountTwo] = useState(0);
+
+  return (
+    <>
+      <div>Non-Memo</div>
+      <div>CountOne: {countOne}</div>
+      <div>CountTwo: {countTwo}</div>
+      <div>
+        <Button
+          handleClick={() => setCountOne(countOne + 1)}
+          name="non-memo button1"
+        />
+        <Button
+          handleClick={() => setCountTwo(countTwo + 1)}
+          name="non-memo button2"
+        />
+      </div>
+    </>
+  );
+};
+
+type ButtonProps = {
+  handleClick: MouseEventHandler<HTMLButtonElement>;
+  name: string;
+};
+
+const Button = ({ handleClick, name }: ButtonProps) => {
+  console.log(`${name} rendered`);
+  return <button onClick={handleClick}>{name}</button>;
+};
+
+// TODO: Why is React.memo() here necessary when we already use useCallback hook.
+const MemoButton = React.memo(({ handleClick, name }: ButtonProps) => {
+  console.log(`${name} rendered`);
+  return <button onClick={handleClick}>{name}</button>;
+});
+
+const MemoApp = () => {
+  console.log("memo counter rendered");
+  const [countOne, setCountOne] = useState(0);
+  const [countTwo, setCountTwo] = useState(0);
+  const memoizedSetCountOne = useCallback(
+    () => setCountOne(countOne + 1),
+    [countOne]
+  );
+  const memoizedSetCountTwo = useCallback(
+    () => setCountTwo(countTwo + 1),
+    [countTwo]
+  );
+  return (
+    <>
+      <div>Memo</div>
+      <div>CountOne: {countOne}</div>
+      <div>CountTwo: {countTwo}</div>
+      <div>
+        <MemoButton handleClick={memoizedSetCountOne} name="memo button1" />
+        <MemoButton handleClick={memoizedSetCountTwo} name="memo button2" />
+      </div>
+    </>
+  );
+};
 
 export default App;
